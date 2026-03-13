@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker</title>
+</head>
+<body>
+
+<h1>Transactions</h1>
+
+<table border="1">
+    <tr>
+        <th>Title</th>
+        <th>Amount</th>
+        <th>Type</th>
+        <th>Date</th>
+    </tr>
+
+    {% for t in transactions %}
+    <tr>
+        <td>{{ t.title }}</td>
+        <td>{{ t.amount }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.date }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>
