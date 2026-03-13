@@ -1,30 +1,52 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Expense Tracker</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-<h1>Transactions</h1>
+{% block title %}Dashboard{% endblock %}
 
-<table border="1">
+{% block content %}
+
+<h2>Transaction Dashboard</h2>
+
+<div class="summary">
+
+    <p>Total Income: {{ income }}</p>
+    <p>Total Expense: {{ expense }}</p>
+    <p>Balance: {{ balance }}</p>
+
+</div>
+
+<h3>All Transactions</h3>
+
+<table>
+
     <tr>
+        <th>ID</th>
         <th>Title</th>
         <th>Amount</th>
         <th>Type</th>
         <th>Date</th>
+        <th>Action</th>
     </tr>
 
     {% for t in transactions %}
+
     <tr>
+
+        <td>{{ t.id }}</td>
         <td>{{ t.title }}</td>
         <td>{{ t.amount }}</td>
         <td>{{ t.type }}</td>
-        <td>{{ t.date }}</td>
+        <td>{{ t.date.strftime("%Y-%m-%d") }}</td>
+
+        <td>
+            <form action="/transactions/delete/{{t.id}}" method="POST">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+
     </tr>
+
     {% endfor %}
 
 </table>
 
-</body>
-</html>
+{% endblock %}
