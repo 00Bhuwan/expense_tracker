@@ -22,6 +22,7 @@ class Transaction(db.Model):
     title = db.Column(db.String(100), unique=True, nullable=False)
     amount = db.Column(db.Float(100), nullable=False)
     type = db.Column(db.String(10))
+    category = db.Column(db.String(100))
     date = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
 
 with app.app_context():
@@ -53,8 +54,9 @@ def transactions():
         title = request.form["title"]
         amount = request.form["amount"]
         t_type = request.form["type"]
+        category = request.form["category"]
 
-        new_transaction = Transaction(title=title, amount=amount, type=t_type)
+        new_transaction = Transaction(title=title, amount=amount, type=t_type, category=category)
         db.session.add(new_transaction)
         db.session.commit()
 

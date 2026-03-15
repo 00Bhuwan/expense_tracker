@@ -19,6 +19,8 @@
 
     </select>
 
+    <input type="text" name="category" placeholder="(e.g: Foods, Travels, Bill)" >
+
     <button type="submit">Add</button>
 
 </form>
@@ -34,6 +36,7 @@
         <th>Title</th>
         <th>Amount</th>
         <th>Type</th>
+        <th>Category</th>
         <th>Date</th>
         <th>Action</th>
     </tr>
@@ -46,6 +49,7 @@
         <td>{{ t.title }}</td>
         <td>{{ t.amount }}</td>
         <td>{{ t.type }}</td>
+        <td>{{ t.category }}</td>
         <td>{{ t.date.strftime("%Y-%m-%d") }}</td>
 
         <td>
