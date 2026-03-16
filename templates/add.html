@@ -1,27 +1,64 @@
 {% extends "base.html" %}
 
-{% block title %}Add Transaction{% endblock %}
+{% block title %}Transaction{% endblock %}
 
 {% block content %}
 
-<h2>Add New Transaction</h2>
-
-<form method="POST" action="/transactions">
+<button onclick="toggleForm('addForm')">Add Transaction</button>
+<div id="addForm" style="display:none; margin-top:20px;">
+<form method="POST" action="/transactions/add">
 
     <input type="text" name="title" placeholder="Title" required>
-
     <input type="number" step="0.01" name="amount" placeholder="Amount" required>
-
     <select name="type">
-
         <option value="income">Income</option>
         <option value="expense">Expense</option>
-
     </select>
-
+    <input type="text" name="category" placeholder="(e.g: Foods, Travels, Bill)" >
     <button type="submit">Add</button>
 
 </form>
+</div>
+
+<div id="editForm" style="display:none; margin-top:20px;">
+    <form method="POST" action="/transactions/edit">
+
+        <!-- Hidden field for transaction ID -->
+        <input type="hidden" name="id" id="editId">
+
+        <input type="text" name="title" id="editTitle" placeholder="Title" required>
+        <input type="number" step="0.01" name="amount" id="editAmount" placeholder="New Amount">
+        <select name="type" id="editType">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+        </select>
+        <input type="text" name="category" id="editCategory" placeholder="New Category">
+
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+<script>
+    function toggleForm(id) {
+    let form = document.getElementById(id);
+    if (form.style.display === 'none') {
+        form.style.display ="block";
+    } else {
+        form.style.display ="none";
+    }
+    }
+</script>
+<script>
+    function openEditForm(id, title, amount, type, category) {
+        document.getElementById('editId').value = id;
+        document.getElementById('editTitle').value = title;
+        document.getElementById('editAmount').value = amount;
+        document.getElementById('editType').value = type;
+        document.getElementById('editCategory').value = category;
+
+        document.getElementById('editForm').style.display = 'block';
+    }
+</script>
 
 <hr>
 
@@ -34,6 +71,7 @@
         <th>Title</th>
         <th>Amount</th>
         <th>Type</th>
+        <th>Category</th>
         <th>Date</th>
         <th>Action</th>
     </tr>
@@ -46,10 +84,13 @@
         <td>{{ t.title }}</td>
         <td>{{ t.amount }}</td>
         <td>{{ t.type }}</td>
+        <td>{{ t.category }}</td>
         <td>{{ t.date.strftime("%Y-%m-%d") }}</td>
 
         <td>
-            <form action="/transactions/delete/{{t.id}}" method="POST">
+            <button type="button" onclick="openEditForm({{t.id}}, '{{t.title}}', {{t.amount}}, '{{t.type}}', '{{t.category}}')">Edit</button>
+
+            <form action="/transactions/delete/{{t.id}}" method="POST" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>

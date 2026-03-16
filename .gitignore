@@ -3,3 +3,4 @@ expense_tracker.iml
 .idea
 .venv
 __pycache__
+demo.py
