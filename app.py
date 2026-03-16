@@ -4,6 +4,7 @@ from datetime import datetime, UTC
 
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,7 +49,7 @@ def home():
 def add_transaction():
     return render_template("add.html", transactions=Transaction.query.all())
 
-@app.route("/transactions", methods=["GET", "POST"])
+@app.route("/transactions/add", methods=["GET", "POST"])
 def transactions():
     if request.method == "POST":
         title = request.form["title"]
@@ -57,8 +58,12 @@ def transactions():
         category = request.form["category"]
 
         new_transaction = Transaction(title=title, amount=amount, type=t_type, category=category)
-        db.session.add(new_transaction)
-        db.session.commit()
+        try:
+            db.session.add(new_transaction)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return f"Error: Title must be unique."
 
     return redirect(url_for("home"))
 
@@ -72,6 +77,21 @@ def del_transaction(transaction_id):
         return redirect(url_for("home"))
     except Exception as e:
         return f"Error: {e}"
+
+# edit
+@app.route("/transactions/edit", methods=["POST"])
+def update_transaction():
+    txn_id = request.form["id"]
+    transaction = db.session.get(Transaction, txn_id)
+
+    if transaction:
+        transaction.title = request.form["title"]
+        transaction.amount = float(request.form["amount"])
+        transaction.type = request.form["type"]
+        transaction.category = request.form["category"]
+        db.session.commit()
+
+    return redirect(url_for("home"))
 
 if __name__ == "__main__":
     app.run(debug=True)
